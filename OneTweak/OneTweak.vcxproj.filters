@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Host">
+      <UniqueIdentifier>{ecd3ea1a-b650-454f-ac1f-d1e490fd9432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PluginAPI">
+      <UniqueIdentifier>{37025b18-ad2f-4f55-a0ee-74cf0363552d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{b2990d37-448c-43ca-b27a-0d589b5d0f33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OneTweak">
+      <UniqueIdentifier>{7150ce6a-8474-4636-9f9d-fa0f6f8e81e0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SkyrimHost.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginAPI_FOSE.h">
+      <Filter>PluginAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginAPI_NVSE.h">
+      <Filter>PluginAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginAPI_OBSE.h">
+      <Filter>PluginAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginAPI_SKSE.h">
+      <Filter>PluginAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="skse_version.h">
+      <Filter>PluginAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>PluginAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="OneTweak.h">
+      <Filter>OneTweak</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>OneTweak</Filter>
+    </ClInclude>
+    <ClInclude Include="SafeWrite.h">
+      <Filter>OneTweak</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>OneTweak</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h">
+      <Filter>OneTweak</Filter>
+    </ClInclude>
+    <ClInclude Include="Fallout3Host.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="OblivionHost.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="FalloutNVHost.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="OneTweakConfig.h">
+      <Filter>OneTweak</Filter>
+    </ClInclude>
+    <ClInclude Include="OneTweakDriver.h">
+      <Filter>OneTweak</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SkyrimHost.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>OneTweak</Filter>
+    </ClCompile>
+    <ClCompile Include="OneTweak.cpp">
+      <Filter>OneTweak</Filter>
+    </ClCompile>
+    <ClCompile Include="Fallout3Host.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="OblivionHost.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="FalloutNVHost.cpp">
+      <Filter>Host</Filter>
+    </ClCompile>
+    <ClCompile Include="OneTweakConfig.cpp">
+      <Filter>OneTweak</Filter>
+    </ClCompile>
+    <ClCompile Include="OneTweakDriver.cpp">
+      <Filter>OneTweak</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="exports.def">
+      <Filter>OneTweak</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resources.rc">
+      <Filter>OneTweak</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

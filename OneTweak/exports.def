@@ -1,0 +1,15 @@
+LIBRARY	"OneTweak"
+
+EXPORTS
+
+SKSEPlugin_Query
+SKSEPlugin_Load
+
+FOSEPlugin_Query
+FOSEPlugin_Load
+
+NVSEPlugin_Query
+NVSEPlugin_Load
+
+OBSEPlugin_Query
+OBSEPlugin_Load
