@@ -2,7 +2,7 @@
 
 #include <shlwapi.h>
 
-#define CONFIG_VERSION 7
+#define CONFIG_VERSION 8
 
 class OneTweakConfig
 {

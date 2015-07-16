@@ -16,7 +16,7 @@ void OneTweakConfig::SaveConfig(IniFile* ini)
 
     ini->Set("Global", "BorderlessWindow", true, "#Enable Borderless Window");
     ini->Set("Global", "DoubleCursorFix", true, "#Enable Double Cursor Fix");
-    ini->Set("Global", "Priority", true, "#Enable dynamic priority change");
+    ini->Set("Global", "Priority", false, "#Enable dynamic priority change");
 
     ini->Set("Priority", "Foreground", 3, "#0 - idle, 1 - below normal, 2 - normal, 3 - above normal, 4 - high, 5 - realtime");
     ini->Set("Priority", "Background", 1, "#0 - idle, 1 - below normal, 2 - normal, 3 - above normal, 4 - high, 5 - realtime");
