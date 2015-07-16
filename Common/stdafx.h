@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <fstream>
 
 #define WIN32_LEAN_AND_MEAN
 #define STRICT

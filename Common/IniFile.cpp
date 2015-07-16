@@ -17,23 +17,19 @@ bool IniFile::Save(const std::string& filename)
 {
     std::string outpath;
     FullPathFromPath(&outpath, filename);
-    HANDLE hFile = CreateFileA(outpath.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	std::ofstream file;
+	file.open(outpath, std::ios::out);
 
     bool out = false;
     for (auto& sectit = sections.begin(); sectit != sections.end(); ++sectit)
     {
-        std::stringstream ss;
         auto commentit = comments.find(sectit->name);
         if (commentit != comments.end())
-            ss << commentit->second << std::endl;
-        const std::string& keyval = ss.str();
-        DWORD outCount;
-        WriteFile(hFile, keyval.c_str(), keyval.size(), &outCount, NULL);
+			file << commentit->second << std::endl;
 
-        if (sectit->Save(hFile))
+		if (sectit->Save(file))
             out = true;
     }
-    CloseHandle(hFile);
     return out;
 }
 
@@ -178,34 +174,24 @@ void IniFile::Section::Populate(const std::string& filename)
     }
 }
 
-bool IniFile::Section::Save(HANDLE hFile)
+bool IniFile::Section::Save(std::ofstream& fstream)
 {
-    std::stringstream ss;
-    ss << "[" << name << "]" << std::endl;
-    const std::string& sectionName = ss.str();
+	fstream << '[' << name << ']' << std::endl;
 
-    DWORD outCount;
-    WriteFile(hFile, sectionName.c_str(), sectionName.size(), &outCount, NULL);
-
-    bool ret = false;
-
+	bool out = false;
     for (auto& keyit = order.begin(); keyit != order.end(); ++keyit)
     {
         std::stringstream ss;
 
         auto commentit = comments.find(*keyit);
         if (commentit != comments.end())
-            ss << commentit->second << std::endl;
+			fstream << commentit->second << std::endl;
 
         auto pair = values.find(*keyit);
-        ss << pair->first << "=" << pair->second << std::endl;
-        const std::string& keyval = ss.str();
-
-        DWORD outCount;
-        WriteFile(hFile, keyval.c_str(), keyval.size(), &outCount, NULL);
-        ret = keyval.size() == outCount;
+		fstream << pair->first << '=' << pair->second << std::endl;
+		out = true;
     }
-    return ret;
+    return true;
 }
 
 void IniFile::Section::CleanLine(std::string* str) const

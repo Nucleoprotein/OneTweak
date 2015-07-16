@@ -85,7 +85,7 @@ public:
 
         void CleanLine(std::string* str) const;
         void Populate(const std::string& filename);
-        bool Save(HANDLE hFile);
+        bool Save(std::ofstream& file);
     };
 
 
