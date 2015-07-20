@@ -13,14 +13,14 @@ FalloutNVConfig::~FalloutNVConfig()
 
 }
 
-void FalloutNVConfig::OnReadConfig(IniFile* ini)
+void FalloutNVConfig::OnReadConfig(CSimpleIniA* ini)
 {
 	if (!ini) return;
 
 	PrintLog(__FUNCTION__);
 
-    ini->Get("FalloutNV", "ClassName", &ClassName, "Fallout: New Vegas");
-    ini->Get("FalloutNV", "WindowName", &WindowName, "Fallout: New Vegas");
+	ClassName = ini->GetValue("FalloutNV", "ClassName", "Fallout: New Vegas");
+	WindowName = ini->GetValue("FalloutNV", "WindowName", "Fallout: New Vegas");
 }
 
 extern "C"

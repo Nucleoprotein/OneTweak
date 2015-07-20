@@ -54,10 +54,10 @@ BYTE GetProductType()
     return 0;
 }
 
-typedef BOOL(WINAPI* GetVersionExA_t) (OSVERSIONINFOEX* lpVersionInformation);
+typedef BOOL(WINAPI* GetVersionExA_t) (OSVERSIONINFOEXA* lpVersionInformation);
 typedef BOOL(WINAPI* GetProductInfo_t)(DWORD dwOSMajorVersion, DWORD dwOSMinorVersion, DWORD dwSpMajorVersion, DWORD dwSpMinorVersion, PDWORD pdwReturnedProductType);
 
-BOOL MyGetVersionExA(OSVERSIONINFOEX* lpVersionInformation)
+BOOL MyGetVersionExA(OSVERSIONINFOEXA* lpVersionInformation)
 {
     GetVersionExA_t RealGetVersionExA = (GetVersionExA_t)GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetVersionExA");
     if (!RealGetVersionExA) return FALSE;

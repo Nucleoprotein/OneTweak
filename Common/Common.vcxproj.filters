@@ -24,25 +24,28 @@
     <ClInclude Include="NonCopyable.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="StringUtils.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="WindowsVersion.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="IniFile.h">
+    <ClInclude Include="COMDeleter.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="StringUtil.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="WinVer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleIni.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonTypes.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,19 +53,16 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>PCH</Filter>
     </ClCompile>
-    <ClCompile Include="StringUtils.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="Utils.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowsVersion.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="IniFile.cpp">
+    <ClCompile Include="StringUtil.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="WinVer.cpp">
       <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>

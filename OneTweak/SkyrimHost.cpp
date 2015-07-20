@@ -17,27 +17,27 @@ SkyrimConfig::~SkyrimConfig()
 	PrintLog(__FUNCTION__);
 }
 
-void SkyrimConfig::OnReadConfig(IniFile* ini)
+void SkyrimConfig::OnReadConfig(CSimpleIniA* ini)
 {
 	if (!ini) return;
 
 	PrintLog(__FUNCTION__);
 
-    ini->Get("Skyrim", "ClassName", &ClassName, "Skyrim");
-    ini->Get("Skyrim", "WindowName", &WindowName, "Skyrim");
+	ClassName = ini->GetValue("Skyrim", "ClassName", "Skyrim");
+	WindowName = ini->GetValue("Skyrim", "WindowName", "Skyrim");
 
-    ini->Get("Skyrim", "PrecacheKiller", &precachekiller);
-    ini->Get("Skyrim", "NoIntro", &nointro);
+	precachekiller = ini->GetBoolValue("Skyrim", "PrecacheKiller");
+	nointro = ini->GetBoolValue("Skyrim", "NoIntro");
 }
 
-void SkyrimConfig::OnSaveConfig(IniFile* ini)
+void SkyrimConfig::OnSaveConfig(CSimpleIniA* ini)
 {
 	if (!ini) return;
 
 	PrintLog(__FUNCTION__);
 
-    ini->Set("Skyrim", "PrecacheKiller", true, "#Enable ShowRaceMenu Precache Killer");
-    ini->Set("Skyrim", "NoIntro", true, "#Disable intro video");
+    ini->SetBoolValue("Skyrim", "PrecacheKiller", true, "#Enable ShowRaceMenu Precache Killer");
+	ini->SetBoolValue("Skyrim", "NoIntro", true, "#Disable intro video");
 }
 
 void SkyrimHost::PrecacheKiller()

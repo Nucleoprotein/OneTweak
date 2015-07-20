@@ -11,8 +11,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
     {
         case DLL_PROCESS_ATTACH:
         {
-            std::string logpath;
-            FullPathFromPath(&logpath, "OneTweak.log");
+            std::string logpath = FullPathFromPath("OneTweak.log");
 
             if (FileExist(logpath))
                 LogFile(logpath);

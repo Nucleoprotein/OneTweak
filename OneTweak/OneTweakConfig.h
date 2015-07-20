@@ -1,8 +1,8 @@
 #pragma once
 
-#include <shlwapi.h>
+#include <SimpleIni.h>
 
-#define CONFIG_VERSION 9
+#define CONFIG_VERSION 10
 
 class OneTweakConfig
 {
@@ -12,8 +12,8 @@ public:
 
     void ReadConfig();
 
-    virtual void OnSaveConfig(IniFile* ini) {};
-    virtual void OnReadConfig(IniFile* ini) {};
+    virtual void OnSaveConfig(CSimpleIniA* ini) {};
+	virtual void OnReadConfig(CSimpleIniA* ini) {};
 
     DWORD version;
 
@@ -53,7 +53,8 @@ public:
     } double_cursor_fix;
 
 protected:
-    void SaveConfig(IniFile* ini);
+	void SaveConfig(CSimpleIniA* ini);
+	std::string inifilename;
 
 private:
     DWORD PriorityIdToClass(DWORD id);

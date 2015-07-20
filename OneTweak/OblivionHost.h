@@ -8,7 +8,7 @@ public:
 	OblivionConfig();
 	virtual ~OblivionConfig();
 
-    void OnReadConfig(IniFile* ini);
+	void OnReadConfig(CSimpleIniA* ini);
 };
 
 

@@ -8,7 +8,7 @@ public:
 	FalloutNVConfig();
 	virtual ~FalloutNVConfig();
 
-    void OnReadConfig(IniFile* ini);
+	void OnReadConfig(CSimpleIniA* ini);
 };
 
 

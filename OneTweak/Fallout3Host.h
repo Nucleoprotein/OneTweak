@@ -8,7 +8,7 @@ public:
 	Fallout3Config();
 	virtual ~Fallout3Config();
 
-    void OnReadConfig(IniFile* ini);
+	void OnReadConfig(CSimpleIniA* ini);
 };
 
 

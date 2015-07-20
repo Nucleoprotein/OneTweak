@@ -13,14 +13,14 @@ OblivionConfig::~OblivionConfig()
 {
 
 }
-void OblivionConfig::OnReadConfig(IniFile* ini)
+void OblivionConfig::OnReadConfig(CSimpleIniA* ini)
 {
 	if (!ini) return;
 
 	PrintLog(__FUNCTION__);
 
-    ini->Get("Oblivion", "ClassName", &ClassName, "Oblivion");
-    ini->Get("Oblivion", "WindowName", &WindowName, "Oblivion");
+	ClassName = ini->GetValue("Oblivion", "ClassName", "Oblivion");
+	WindowName = ini->GetValue("Oblivion", "WindowName", "Oblivion");
 }
 
 extern "C"

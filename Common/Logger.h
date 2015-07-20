@@ -7,7 +7,7 @@
 #include <string> 
 
 #include "NonCopyable.h"
-#include "StringUtils.h"
+#include "StringUtil.h"
 #include "Utils.h"
 
 #ifndef LOGGER_DISABLE
@@ -33,9 +33,7 @@ public:
 
     bool File(const std::string& filename)
     {
-        std::string logpath;
-        FullPathFromPath(&logpath, filename);
-
+        std::string logpath = FullPathFromPath(filename);
         m_file = CreateFileA(logpath.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         return m_file != INVALID_HANDLE_VALUE;
     }
@@ -76,7 +74,7 @@ public:
         {
             int outsize = _vscprintf(format, args) + 1;
             std::unique_ptr<char[]> buffer(new char[outsize]);
-            CharArrayFormatV(buffer.get(), outsize, format, args);
+            CharArrayFromFormatV(buffer.get(), outsize, format, args);
 
 #ifdef LOGGER_DISABLE_TIME
             std::string to_print(buffer.get(), outsize - 1);
@@ -113,7 +111,7 @@ private:
         }
 
         GetLocalTime(&m_systime);
-        *out = StringFormat("%02u:%02u:%02u.%03u\t%08u\t", m_systime.wHour, m_systime.wMinute,
+        *out = StringFromFormat("%02u:%02u:%02u.%03u\t%08u\t", m_systime.wHour, m_systime.wMinute,
             m_systime.wSecond, m_systime.wMilliseconds, GetCurrentThreadId());
 
     }

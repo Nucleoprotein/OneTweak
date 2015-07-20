@@ -13,14 +13,14 @@ Fallout3Config::~Fallout3Config()
 
 }
 
-void Fallout3Config::OnReadConfig(IniFile* ini)
+void Fallout3Config::OnReadConfig(CSimpleIniA* ini)
 {
 	if (!ini) return;
 
 	PrintLog(__FUNCTION__);
 
-    ini->Get("Fallout3", "ClassName", &ClassName, "Fallout3");
-    ini->Get("Fallout3", "WindowName", &WindowName, "Fallout3");
+	ClassName = ini->GetValue("Fallout3", "ClassName", "Fallout3");
+	WindowName = ini->GetValue("Fallout3", "WindowName", "Fallout3");
 }
 
 extern "C"

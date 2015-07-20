@@ -12,8 +12,8 @@ public:
 	bool precachekiller;
 	bool nointro;
 
-    void OnReadConfig(IniFile* ini);
-    void OnSaveConfig(IniFile* ini);
+	void OnReadConfig(CSimpleIniA* ini);
+	void OnSaveConfig(CSimpleIniA* ini);
 };
 
 
