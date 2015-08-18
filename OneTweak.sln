@@ -1,13 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OneTweak", "OneTweak\OneTweak.vcxproj", "{3E1B3435-901E-41D8-847D-A7F8D638EFE2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "Common\Common.vcxproj", "{0CAEE158-51E4-4C81-8CAC-F39F744DAF2D}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libMinHook", "MinHook\build\VC12\libMinHook.vcxproj", "{F142A341-5EE0-442D-A15F-98AE9B48DBAE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{32330FC9-559B-429E-9F78-FDA431E0EE18}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Builds\d3d9ex\Common\Defines.h = ..\..\Builds\d3d9ex\Common\Defines.h
+		..\..\Builds\d3d9ex\Common\Logger.h = ..\..\Builds\d3d9ex\Common\Logger.h
+		..\..\Builds\d3d9ex\Common\NonCopyable.h = ..\..\Builds\d3d9ex\Common\NonCopyable.h
+		..\..\Builds\d3d9ex\Common\SimpleIni.h = ..\..\Builds\d3d9ex\Common\SimpleIni.h
+		..\..\Builds\d3d9ex\Common\StringUtil.h = ..\..\Builds\d3d9ex\Common\StringUtil.h
+		..\..\Builds\d3d9ex\Common\Timer.h = ..\..\Builds\d3d9ex\Common\Timer.h
+		..\..\Builds\d3d9ex\Common\Types.h = ..\..\Builds\d3d9ex\Common\Types.h
+		..\..\Builds\d3d9ex\Common\WinUtil.h = ..\..\Builds\d3d9ex\Common\WinUtil.h
+		..\..\Builds\d3d9ex\Common\WinVer.h = ..\..\Builds\d3d9ex\Common\WinVer.h
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +34,6 @@ Global
 		{3E1B3435-901E-41D8-847D-A7F8D638EFE2}.Release|Win32.ActiveCfg = Release|Win32
 		{3E1B3435-901E-41D8-847D-A7F8D638EFE2}.Release|Win32.Build.0 = Release|Win32
 		{3E1B3435-901E-41D8-847D-A7F8D638EFE2}.Release|x64.ActiveCfg = Release|Win32
-		{0CAEE158-51E4-4C81-8CAC-F39F744DAF2D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0CAEE158-51E4-4C81-8CAC-F39F744DAF2D}.Debug|Win32.Build.0 = Debug|Win32
-		{0CAEE158-51E4-4C81-8CAC-F39F744DAF2D}.Debug|x64.ActiveCfg = Debug|x64
-		{0CAEE158-51E4-4C81-8CAC-F39F744DAF2D}.Debug|x64.Build.0 = Debug|x64
-		{0CAEE158-51E4-4C81-8CAC-F39F744DAF2D}.Release|Win32.ActiveCfg = Release|Win32
-		{0CAEE158-51E4-4C81-8CAC-F39F744DAF2D}.Release|Win32.Build.0 = Release|Win32
-		{0CAEE158-51E4-4C81-8CAC-F39F744DAF2D}.Release|x64.ActiveCfg = Release|x64
-		{0CAEE158-51E4-4C81-8CAC-F39F744DAF2D}.Release|x64.Build.0 = Release|x64
 		{F142A341-5EE0-442D-A15F-98AE9B48DBAE}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F142A341-5EE0-442D-A15F-98AE9B48DBAE}.Debug|Win32.Build.0 = Debug|Win32
 		{F142A341-5EE0-442D-A15F-98AE9B48DBAE}.Debug|x64.ActiveCfg = Debug|x64

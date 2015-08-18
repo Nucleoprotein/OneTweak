@@ -845,6 +845,30 @@ public:
         const SI_CHAR * a_pSection
         ) const;
 
+	/** Retrieve the value for a specific key. If multiple keys are enabled
+	(see SetMultiKey) then only the first value associated with that key
+	will be returned, see GetAllValues for getting all values with multikey.
+
+	NOTE! The returned value is a pointer to string data stored in memory
+	owned by CSimpleIni. Ensure that the CSimpleIni object is not destroyed
+	or Reset while you are using this pointer!
+
+	@param a_pSection       Section to search
+	@param a_pKey           Key to search for
+	@param a_pDefault       Value to return if the key is not found
+	@param a_pHasMultiple   Optionally receive notification of if there are
+	multiple entries for this key.
+
+	@return a_pDefault      Key was not found in the section
+	@return other           Value of the key
+	*/
+	const std::basic_string<SI_CHAR> GetStringValue(
+		const SI_CHAR * a_pSection,
+		const SI_CHAR * a_pKey,
+		const SI_CHAR * a_pDefault = NULL,
+		bool *          a_pHasMultiple = NULL
+		) const;
+
     /** Retrieve the value for a specific key. If multiple keys are enabled
         (see SetMultiKey) then only the first value associated with that key
         will be returned, see GetAllValues for getting all values with multikey.
@@ -973,6 +997,17 @@ public:
     {
         return AddEntry(a_pSection, a_pKey, a_pValue, a_pComment, a_bForceReplace, true);
     }
+
+	SI_Error SetStringValue(
+		const SI_CHAR * a_pSection,
+		const SI_CHAR * a_pKey,
+		const SI_CHAR * a_pValue,
+		const SI_CHAR * a_pComment = NULL,
+		bool            a_bForceReplace = false
+		)
+	{
+		return AddEntry(a_pSection, a_pKey, a_pValue, a_pComment, a_bForceReplace, true);
+	}
 
     /** Add or update a numeric value. This will always insert
         when multiple keys are enabled.
@@ -1977,6 +2012,19 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
 }
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
+const std::basic_string<SI_CHAR>
+	CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::GetStringValue(
+	const SI_CHAR * a_pSection,
+	const SI_CHAR * a_pKey,
+	const SI_CHAR * a_pDefault,
+	bool *          a_pHasMultiple
+	) const
+{
+	const char* pReturn = GetValue(a_pSection, a_pKey, a_pDefault, a_pHasMultiple);
+	return std::basic_string<SI_CHAR>(pReturn);
+}
+
+template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 const SI_CHAR *
 CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetValue(
     const SI_CHAR * a_pSection,
@@ -2434,7 +2482,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
         if (iSection->pComment) {
             if (bNeedNewLine) {
                 a_oOutput.Write(SI_NEWLINE_A);
-                a_oOutput.Write(SI_NEWLINE_A);
+                //a_oOutput.Write(SI_NEWLINE_A);
             }
             if (!OutputMultiLineText(a_oOutput, convert, iSection->pComment)) {
                 return SI_FAIL;
@@ -2444,7 +2492,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
 
         if (bNeedNewLine) {
             a_oOutput.Write(SI_NEWLINE_A);
-            a_oOutput.Write(SI_NEWLINE_A);
+            //a_oOutput.Write(SI_NEWLINE_A);
             bNeedNewLine = false;
         }
 

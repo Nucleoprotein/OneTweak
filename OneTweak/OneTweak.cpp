@@ -8,25 +8,25 @@ OneTweakHost::OneTweakHost()
 {
 	PrintLog("OneTweak version "VERSION_STRING);
 
-	PrintFunc;
+	PrintLog(__FUNCTION__);
 
 	this->SetProcessDPIAware();
 }
 
 OneTweakHost::~OneTweakHost()
 {
-	PrintFunc;
+	PrintLog(__FUNCTION__);
 }
 
 void OneTweakHost::Run()
 {
-	PrintFunc;
+	PrintLog(__FUNCTION__);
     OneTweakDriver::GetInstance().Run();
 }
 
 void OneTweakHost::SetProcessDPIAware()
 {
-	PrintFunc;
+	PrintLog(__FUNCTION__);
 
 	typedef BOOL(WINAPI* SetProcessDPIAware_t)(void);
 	HMODULE user32_dll = GetModuleHandle("user32.dll");

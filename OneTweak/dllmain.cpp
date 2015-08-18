@@ -13,7 +13,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
         {
             std::string logpath = FullPathFromPath("OneTweak.log");
 
-            if (FileExist(logpath))
+            if (FileExists(logpath))
                 LogFile(logpath);
             break;
         }

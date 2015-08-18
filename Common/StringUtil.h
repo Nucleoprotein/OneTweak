@@ -1,40 +1,53 @@
-// Copyright 2008 Dolphin Emulator Project
-// Licensed under GPLv2+
-// Refer to the license.txt file included.
-
 #pragma once
 
-#include <cstdarg>
-#include <cstddef>
-#include <iomanip>
-#include <sstream>
 #include <algorithm>
 #include <string>
-#include <vector>
 #include <functional> 
 #include <cctype>
-#include <locale>
-
-#include "Common.h"
 
 /// Try to find in the Haystack the Needle - ignore case
-bool findStringIC(const std::string & strHaystack, const std::string & strNeedle);
+inline bool StringSearchIgnoreCase(const std::string & strHaystack, const std::string & strNeedle)
+{
+	auto it = std::search(
+		strHaystack.begin(), strHaystack.end(),
+		strNeedle.begin(), strNeedle.end(),
+		[](char ch1, char ch2) { return ::toupper(ch1) == ::toupper(ch2); }
+	);
+	return (it != strHaystack.end());
+}
 
-std::string StringFromFormatV(const char* format, va_list args);
+inline bool CharArrayFromFormatV(char* out, int outsize, const char* format, va_list args)
+{
+	int writtenCount = _vsnprintf_s(out, outsize, outsize, format, args);
+	if (writtenCount > 0 && writtenCount < outsize)
+	{
+		out[writtenCount] = '\0';
+		return true;
+	}
+	else
+	{
+		out[outsize - 1] = '\0';
+		return false;
+	}
+}
 
-std::string StringFromFormat(const char* format, ...)
-#if !defined _WIN32
-// On compilers that support function attributes, this gives StringFromFormat
-// the same errors and warnings that printf would give.
- __attribute__ ((__format__(printf, 1, 2)))
-#endif
-;
-
-// Cheap!
-bool CharArrayFromFormatV(char* out, int outsize, const char* format, va_list args);
+inline bool CharArrayFromFormatV(wchar_t* out, int outsize, const wchar_t* format, va_list args)
+{
+    int writtenCount = _vsnwprintf_s(out, outsize, outsize, format, args);
+    if (writtenCount > 0 && writtenCount < outsize)
+    {
+        out[writtenCount] = '\0';
+        return true;
+    }
+    else
+    {
+        out[outsize - 1] = '\0';
+        return false;
+    }
+}
 
 template<size_t Count>
-inline void CharArrayFromFormat(char (& out)[Count], const char* format, ...)
+inline void CharArrayFromFormat(char(&out)[Count], const char* format, ...)
 {
 	va_list args;
 	va_start(args, format);
@@ -42,103 +55,97 @@ inline void CharArrayFromFormat(char (& out)[Count], const char* format, ...)
 	va_end(args);
 }
 
-// Good
-std::string ArrayToString(const u8 *data, u32 size, int line_len = 20, bool spaces = true);
-
-std::string StripSpaces(const std::string &s);
-std::string StripQuotes(const std::string &s);
-
-// Thousand separator. Turns 12345678 into 12,345,678
-template <typename I>
-std::string ThousandSeparate(I value, int spaces = 0)
+template<size_t Count>
+inline void CharArrayFromFormat(wchar_t(&out)[Count], const wchar_t* format, ...)
 {
-	std::ostringstream oss;
-
-// std::locale("") seems to be broken on many platforms
-#if defined _WIN32 || (defined __linux__ && !defined __clang__)
-	oss.imbue(std::locale(""));
-#endif
-	oss << std::setw(spaces) << value;
-
-	return oss.str();
+    va_list args;
+    va_start(args, format);
+    CharArrayFromFormatV(out, Count, format, args);
+    va_end(args);
 }
 
-std::string StringFromInt(int value);
-std::string StringFromBool(bool value);
-
-bool TryParse(const std::string &str, bool *output);
-bool TryParse(const std::string &str, u32 *output);
-
-template <typename N>
-static bool TryParse(const std::string &str, N *const output)
+inline std::string StringFromFormatV(const char* format, va_list args)
 {
-	std::istringstream iss(str);
-	// is this right? not doing this breaks reading floats on locales that use different decimal separators
-	iss.imbue(std::locale("C"));
+	int required = _vscprintf(format, args);
+	std::unique_ptr<char[]> buf(new char[required + 1]);
+	CharArrayFromFormatV(buf.get(), required + 1, format, args);
 
-	N tmp = 0;
-	if (iss >> tmp)
-	{
-		*output = tmp;
-		return true;
-	}
-	else
-		return false;
+	std::string temp = buf.get();
+	return std::move(temp);
 }
 
-template <typename N>
-bool TryParseVector(const std::string& str, std::vector<N>* output, const char delimiter = ',')
+inline std::wstring StringFromFormatV(const wchar_t* format, va_list args)
 {
-	output->clear();
-	std::istringstream buffer(str);
-	std::string variable;
+    int required = _vscwprintf(format, args);
+    std::unique_ptr<wchar_t[]> buf(new wchar_t[required + 1]);
+    CharArrayFromFormatV(buf.get(), required + 1, format, args);
 
-	while (std::getline(buffer, variable, delimiter))
-	{
-		N tmp = 0;
-		if (!TryParse(variable, &tmp))
-			return false;
-		output->push_back(tmp);
-	}
-	return true;
+    std::wstring temp = buf.get();
+    return std::move(temp);
 }
 
-// TODO: kill this
-bool AsciiToHex(const std::string& _szValue, u32& result);
+inline std::string StringFromFormat(const char* format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	std::string res = StringFromFormatV(format, args);
+	va_end(args);
+	return std::move(res);
+}
 
-std::string TabsToSpaces(int tab_size, const std::string &in);
+inline std::wstring StringFromFormat(const wchar_t* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    std::wstring res = StringFromFormatV(format, args);
+    va_end(args);
+    return std::move(res);
+}
 
-void SplitString(const std::string& str, char delim, std::vector<std::string>& output);
+inline std::string UTF16ToUTF8(const std::wstring& input)
+{
+    auto const size = WideCharToMultiByte(CP_UTF8, 0, input.data(), (int)input.size(), nullptr, 0, nullptr, nullptr);
 
-// "C:/Windows/winhelp.exe" to "C:/Windows/", "winhelp", ".exe"
-bool SplitPath(const std::string& full_path, std::string* _pPath, std::string* _pFilename, std::string* _pExtension);
+    std::string output;
+    output.resize(size);
 
-void BuildCompleteFilename(std::string& _CompleteFilename, const std::string& _Path, const std::string& _Filename);
-std::string ReplaceAll(std::string result, const std::string& src, const std::string& dest);
+    if (size == 0 || size != WideCharToMultiByte(CP_UTF8, 0, input.data(), (int)input.size(), &output[0], (int)output.size(), nullptr, nullptr))
+    {
+        output.clear();
+    }
 
-std::string CP1252ToUTF8(const std::string& str);
-std::string SHIFTJISToUTF8(const std::string& str);
-std::string UTF16ToUTF8(const std::wstring& str);
+    return output;
+}
 
-#ifdef _WIN32
+inline std::wstring CPToUTF16(DWORD code_page, const std::string& input)
+{
+    auto const size = MultiByteToWideChar(code_page, 0, input.data(), (int)input.size(), nullptr, 0);
 
-std::wstring UTF8ToUTF16(const std::string& str);
+    std::wstring output;
+    output.resize(size);
 
-#ifdef _UNICODE
-inline std::string TStrToUTF8(const std::wstring& str)
-{ return UTF16ToUTF8(str); }
+    if (size == 0 || size != MultiByteToWideChar(code_page, 0, input.data(), (int)input.size(), &output[0], (int)output.size()))
+    {
+        output.clear();
+    }
 
-inline std::wstring UTF8ToTStr(const std::string& str)
-{ return UTF8ToUTF16(str); }
-#else
-inline std::string TStrToUTF8(const std::string& str)
-{ return str; }
+    return output;
+}
 
-inline std::string UTF8ToTStr(const std::string& str)
-{ return str; }
-#endif
+inline std::wstring UTF8ToUTF16(const std::string& input)
+{
+    return CPToUTF16(CP_UTF8, input);
+}
 
-#endif
+inline std::string SHIFTJISToUTF8(const std::string& input)
+{
+    return UTF16ToUTF8(CPToUTF16(932, input));
+}
+
+inline std::string CP1252ToUTF8(const std::string& input)
+{
+    return UTF16ToUTF8(CPToUTF16(1252, input));
+}
 
 // trim from start
 static inline std::string &ltrim(std::string &s) {

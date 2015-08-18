@@ -6,7 +6,7 @@
 
 OneTweakDriver::OneTweakDriver()
 {
-	PrintFunc;
+	PrintLog(__FUNCTION__);
 	MH_Initialize();
 
 	MH_CreateHook(::GetPrivateProfileIntA, HookGetPrivateProfileIntA, reinterpret_cast<void**>(&GetPrivateProfileIntA));
@@ -16,7 +16,7 @@ OneTweakDriver::OneTweakDriver()
 
 OneTweakDriver::~OneTweakDriver()
 {
-	PrintFunc;
+	PrintLog(__FUNCTION__);
 
 	ShowCursor(true);
 
@@ -72,7 +72,7 @@ UINT WINAPI OneTweakDriver::HookGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR l
 
 HWND WINAPI OneTweakDriver::HookCreateWindowExA(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam)
 {
-	PrintFunc;
+	PrintLog(__FUNCTION__);
 
 	auto& config = g_Host->GetConfig();
 
@@ -140,7 +140,7 @@ HWND WINAPI OneTweakDriver::HookCreateWindowExA(DWORD dwExStyle, LPCSTR lpClassN
 
 BOOL WINAPI OneTweakDriver::HookSetWindowPos(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, UINT uFlags)
 {
-	PrintFunc;
+	PrintLog(__FUNCTION__);
 
 	if (OneTweakDriver::GetInstance().hWnd == hWnd)
 	{

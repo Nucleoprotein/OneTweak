@@ -5,9 +5,8 @@ class NonCopyable
 {
 protected:
 	NonCopyable() {}
-	NonCopyable(const NonCopyable&&) {}
-	void operator=(const NonCopyable&&) {}
+	~NonCopyable() {}
 private:
-	NonCopyable(NonCopyable&);
-	NonCopyable& operator=(NonCopyable& other);
+	NonCopyable( const NonCopyable& );
+	const NonCopyable& operator=( NonCopyable& other );
 };

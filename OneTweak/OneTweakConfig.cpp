@@ -9,7 +9,7 @@ version(0)
 
 void OneTweakConfig::SaveConfig(CSimpleIniA* ini)
 {
-	PrintFunc;
+	PrintLog(__FUNCTION__);
 
 	ini->Reset();
 	version = CONFIG_VERSION;
@@ -42,7 +42,7 @@ void OneTweakConfig::SaveConfig(CSimpleIniA* ini)
 
 void OneTweakConfig::ReadConfig()
 {
-	PrintFunc;
+	PrintLog(__FUNCTION__);
 
 	inifilename = FullPathFromPath("OneTweak.ini");
 
@@ -91,7 +91,7 @@ void OneTweakConfig::ReadConfig()
 
 OneTweakConfig::~OneTweakConfig()
 {
-	PrintFunc;
+	PrintLog(__FUNCTION__);
 }
 
 DWORD OneTweakConfig::PriorityIdToClass(DWORD id)

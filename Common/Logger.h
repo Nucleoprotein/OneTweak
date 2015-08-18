@@ -8,7 +8,7 @@
 
 #include "NonCopyable.h"
 #include "StringUtil.h"
-#include "Utils.h"
+#include "WinUtil.h"
 
 #ifndef LOGGER_DISABLE
 class Logger : NonCopyable
@@ -35,10 +35,15 @@ public:
     {
         std::string logpath = FullPathFromPath(filename);
         m_file = CreateFileA(logpath.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		OutputDebugStringA(logpath.c_str());
+
+		if (m_file != INVALID_HANDLE_VALUE)
+			PrintStamp(false);
+
         return m_file != INVALID_HANDLE_VALUE;
     }
 
-    bool Console(const char* title, const char* console_notice)
+    bool Console(const char* title)
     {
         AllocConsole();
 
@@ -47,13 +52,11 @@ public:
         {
             ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
             if (title) SetConsoleTitleA(title);
-            if (console_notice)
-            {
-                size_t len = strlen(console_notice);
-                DWORD lenout = 0;
-                WriteConsoleA(m_console, console_notice, (DWORD)len, &lenout, NULL);
-            }
         }
+
+		if (m_console != INVALID_HANDLE_VALUE)
+			PrintStamp(true);
+
         return m_console != INVALID_HANDLE_VALUE;
     }
 
@@ -84,8 +87,7 @@ public:
             to_print.append(buffer.get(), outsize - 1);
 #endif
 
-            to_print.push_back('\r');
-            to_print.push_back('\n');
+            to_print.append("\r\n");
 
             DWORD lenout = 0;
             if (to_console) WriteConsoleA(m_console, to_print.c_str(), (DWORD)to_print.size(), &lenout, NULL);
@@ -94,22 +96,17 @@ public:
     }
 
 private:
+	void PrintStamp(bool console)
+	{
+		static char stamp[] = "[TIME]\t\t[THREAD]\t[LOG]\r\n";
+		DWORD lenout = 0;
+
+		if (console) WriteConsoleA(m_console, stamp, _countof(stamp) - 1, &lenout, NULL);
+		else WriteFile(m_file, stamp, _countof(stamp) - 1, &lenout, NULL);
+	}
+
     void GetTime(std::string* out)
     {
-        static bool write_stamp = true;
-        if (write_stamp)
-        {
-            static char stamp[] = "[TIME]\t\t[THREAD]\t[LOG]\n";
-            DWORD lenout = 0;
-
-            bool to_console = m_console != INVALID_HANDLE_VALUE;
-            bool to_file = m_file != INVALID_HANDLE_VALUE;
-
-            if (to_console) WriteConsoleA(m_console, stamp, _countof(stamp) - 1, &lenout, NULL);
-            if (to_file) WriteFile(m_file, stamp, _countof(stamp) - 1, &lenout, NULL);
-            write_stamp = false;
-        }
-
         GetLocalTime(&m_systime);
         *out = StringFromFormat("%02u:%02u:%02u.%03u\t%08u\t", m_systime.wHour, m_systime.wMinute,
             m_systime.wSecond, m_systime.wMilliseconds, GetCurrentThreadId());
@@ -126,9 +123,9 @@ inline void LogFile(const std::string& logname)
     Logger::Get().File(logname);
 }
 
-inline void LogConsole(const char* title = nullptr, const char* console_notice = nullptr)
+inline void LogConsole(const char* title = nullptr)
 {
-    Logger::Get().Console(title, console_notice);
+    Logger::Get().Console(title);
 }
 
 inline void PrintLog(const char* format, ...)
@@ -138,8 +135,6 @@ inline void PrintLog(const char* format, ...)
     Logger::Get().Print(format, args);
     va_end(args);
 }
-
-#define PrintFunc PrintLog(__FUNCTION__);
 
 #else
 #define LogFile(logname) (logname)
