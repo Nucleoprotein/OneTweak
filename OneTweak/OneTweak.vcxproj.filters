@@ -69,6 +69,12 @@
     <ClInclude Include="OneTweakDriver.h">
       <Filter>OneTweak</Filter>
     </ClInclude>
+    <ClInclude Include="Fallout4Host.h">
+      <Filter>Host</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginAPI_F4SE.h">
+      <Filter>PluginAPI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SkyrimHost.cpp">
@@ -97,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="OneTweakDriver.cpp">
       <Filter>OneTweak</Filter>
+    </ClCompile>
+    <ClCompile Include="Fallout4Host.cpp">
+      <Filter>Host</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

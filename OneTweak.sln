@@ -1,24 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OneTweak", "OneTweak\OneTweak.vcxproj", "{3E1B3435-901E-41D8-847D-A7F8D638EFE2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libMinHook", "MinHook\build\VC12\libMinHook.vcxproj", "{F142A341-5EE0-442D-A15F-98AE9B48DBAE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{32330FC9-559B-429E-9F78-FDA431E0EE18}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Builds\d3d9ex\Common\Defines.h = ..\..\Builds\d3d9ex\Common\Defines.h
-		..\..\Builds\d3d9ex\Common\Logger.h = ..\..\Builds\d3d9ex\Common\Logger.h
-		..\..\Builds\d3d9ex\Common\NonCopyable.h = ..\..\Builds\d3d9ex\Common\NonCopyable.h
-		..\..\Builds\d3d9ex\Common\SimpleIni.h = ..\..\Builds\d3d9ex\Common\SimpleIni.h
-		..\..\Builds\d3d9ex\Common\StringUtil.h = ..\..\Builds\d3d9ex\Common\StringUtil.h
-		..\..\Builds\d3d9ex\Common\Timer.h = ..\..\Builds\d3d9ex\Common\Timer.h
-		..\..\Builds\d3d9ex\Common\Types.h = ..\..\Builds\d3d9ex\Common\Types.h
-		..\..\Builds\d3d9ex\Common\WinUtil.h = ..\..\Builds\d3d9ex\Common\WinUtil.h
-		..\..\Builds\d3d9ex\Common\WinVer.h = ..\..\Builds\d3d9ex\Common\WinVer.h
+		.\Common\Defines.h = .\Common\Defines.h
+		.\Common\Logger.h = .\Common\Logger.h
+		.\Common\NonCopyable.h = .\Common\NonCopyable.h
+		.\Common\SimpleIni.h = .\Common\SimpleIni.h
+		.\Common\StringUtil.h = .\Common\StringUtil.h
+		.\Common\Timer.h = .\Common\Timer.h
+		.\Common\Types.h = .\Common\Types.h
+		.\Common\WinUtil.h = .\Common\WinUtil.h
+		.\Common\WinVer.h = .\Common\WinVer.h
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libMinHook", "MinHook\build\VC14\libMinHook.vcxproj", "{F142A341-5EE0-442D-A15F-98AE9B48DBAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

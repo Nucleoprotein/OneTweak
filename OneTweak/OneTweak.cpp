@@ -6,7 +6,7 @@ std::unique_ptr<OneTweakHost> g_Host(nullptr);
 
 OneTweakHost::OneTweakHost()
 {
-	PrintLog("OneTweak version "VERSION_STRING);
+	PrintLog("OneTweak version " VERSION_STRING);
 
 	PrintLog(__FUNCTION__);
 

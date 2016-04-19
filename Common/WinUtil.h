@@ -41,29 +41,23 @@ inline void RemoveFileSpec(wchar_t* path)
 	}
 }
 
-inline void RemovePath(char* path, size_t count)
+inline void RemovePath(char* path)
 {
-	if (path[count - 4] == '.')
+	char* p = strrchr(path, '\\');
+	if (p)
 	{
-		char* p = strrchr(path, '\\');
-		if (p)
-		{
-			strcpy_s(path, count, p + 1);
-			path[strlen(p)] = '\0';
-		}
+		strcpy_s(path, strlen(p), p + 1);
+		path[strlen(p)] = '\0';
 	}
 }
 
-inline void RemovePath(wchar_t* path, size_t count)
+inline void RemovePath(wchar_t* path)
 {
-	if (path[wcslen(path) - 4] == L'.')
+	wchar_t* p = wcsrchr(path, L'\\');
+	if (p)
 	{
-		wchar_t* p = wcsrchr(path, L'\\');
-		if (p)
-		{
-			wcscpy_s(path, count, p + 1);
-			path[wcslen(p)] = L'\0';
-		}
+		wcscpy_s(path, wcslen(p), p + 1);
+		path[wcslen(p)] = L'\0';
 	}
 }
 
@@ -147,7 +141,7 @@ inline std::string ModuleNameA(HMODULE hModule)
 	std::unique_ptr<char[]> buffer(new char[MAX_PATH]);
     if (GetModuleFileNameA(hModule, buffer.get(), MAX_PATH))
     {
-        RemovePath(buffer.get(), MAX_PATH);
+        RemovePath(buffer.get());
 
         std::string res = buffer.get();
         return std::move(res);
@@ -160,7 +154,7 @@ inline std::wstring ModuleNameW(HMODULE hModule)
 	std::unique_ptr<wchar_t[]> buffer(new wchar_t[MAX_PATH]);
     if (GetModuleFileNameW(hModule, buffer.get(), MAX_PATH))
     {
-        RemovePath(buffer.get(), MAX_PATH);
+        RemovePath(buffer.get());
 
         std::wstring res = buffer.get();
         return std::move(res);

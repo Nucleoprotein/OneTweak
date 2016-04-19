@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,15 +19,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -95,10 +95,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Fallout3Host.h" />
+    <ClInclude Include="Fallout4Host.h" />
     <ClInclude Include="FalloutNVHost.h" />
     <ClInclude Include="OblivionHost.h" />
     <ClInclude Include="OneTweakConfig.h" />
     <ClInclude Include="OneTweakDriver.h" />
+    <ClInclude Include="PluginAPI_F4SE.h" />
     <ClInclude Include="SkyrimHost.h" />
     <ClInclude Include="OneTweak.h" />
     <ClInclude Include="PluginAPI_FOSE.h" />
@@ -123,6 +125,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Fallout3Host.cpp" />
+    <ClCompile Include="Fallout4Host.cpp" />
     <ClCompile Include="FalloutNVHost.cpp" />
     <ClCompile Include="OblivionHost.cpp" />
     <ClCompile Include="OneTweak.cpp" />
@@ -141,7 +144,7 @@
     <ResourceCompile Include="resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MinHook\build\VC12\libMinHook.vcxproj">
+    <ProjectReference Include="..\MinHook\build\VC14\libMinHook.vcxproj">
       <Project>{f142a341-5ee0-442d-a15f-98ae9b48dbae}</Project>
     </ProjectReference>
   </ItemGroup>
