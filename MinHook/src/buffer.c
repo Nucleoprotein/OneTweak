@@ -1,6 +1,6 @@
 ﻿/*
  *  MinHook - The Minimalistic API Hooking Library for x64/x86
- *  Copyright (C) 2009-2015 Tsuda Kageyu.
+ *  Copyright (C) 2009-2016 Tsuda Kageyu.
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <Windows.h>
+#define STRICT
+#define NOMINMAX
+#define _WIN32_WINNT 0x0501
+#include <windows.h>
 #include "buffer.h"
 
 // Size of each memory block. (= page size of VirtualAlloc)
@@ -90,7 +93,7 @@ static LPVOID FindPrevFreeRegion(LPVOID pAddress, LPVOID pMinAddr, DWORD dwAlloc
 {
     ULONG_PTR tryAddr = (ULONG_PTR)pAddress;
 
-    // Round down to the next allocation granularity.
+    // Round down to the allocation granularity.
     tryAddr -= tryAddr % dwAllocationGranularity;
 
     // Start from the previous allocation granularity multiply.
@@ -99,7 +102,7 @@ static LPVOID FindPrevFreeRegion(LPVOID pAddress, LPVOID pMinAddr, DWORD dwAlloc
     while (tryAddr >= (ULONG_PTR)pMinAddr)
     {
         MEMORY_BASIC_INFORMATION mbi;
-        if (VirtualQuery((LPVOID)tryAddr, &mbi, sizeof(MEMORY_BASIC_INFORMATION)) == 0)
+        if (VirtualQuery((LPVOID)tryAddr, &mbi, sizeof(mbi)) == 0)
             break;
 
         if (mbi.State == MEM_FREE)
@@ -121,7 +124,7 @@ static LPVOID FindNextFreeRegion(LPVOID pAddress, LPVOID pMaxAddr, DWORD dwAlloc
 {
     ULONG_PTR tryAddr = (ULONG_PTR)pAddress;
 
-    // Round down to the next allocation granularity.
+    // Round down to the allocation granularity.
     tryAddr -= tryAddr % dwAllocationGranularity;
 
     // Start from the next allocation granularity multiply.
@@ -130,7 +133,7 @@ static LPVOID FindNextFreeRegion(LPVOID pAddress, LPVOID pMaxAddr, DWORD dwAlloc
     while (tryAddr <= (ULONG_PTR)pMaxAddr)
     {
         MEMORY_BASIC_INFORMATION mbi;
-        if (VirtualQuery((LPVOID)tryAddr, &mbi, sizeof(MEMORY_BASIC_INFORMATION)) == 0)
+        if (VirtualQuery((LPVOID)tryAddr, &mbi, sizeof(mbi)) == 0)
             break;
 
         if (mbi.State == MEM_FREE)
@@ -161,10 +164,11 @@ static PMEMORY_BLOCK GetMemoryBlock(LPVOID pOrigin)
     maxAddr = (ULONG_PTR)si.lpMaximumApplicationAddress;
 
     // pOrigin ± 512MB
-    if ((ULONG_PTR)pOrigin > MAX_MEMORY_RANGE)
-        minAddr = max(minAddr, (ULONG_PTR)pOrigin - MAX_MEMORY_RANGE);
+    if ((ULONG_PTR)pOrigin > MAX_MEMORY_RANGE && minAddr < (ULONG_PTR)pOrigin - MAX_MEMORY_RANGE)
+        minAddr = (ULONG_PTR)pOrigin - MAX_MEMORY_RANGE;
 
-    maxAddr = min(maxAddr, (ULONG_PTR)pOrigin + MAX_MEMORY_RANGE);
+    if (maxAddr > (ULONG_PTR)pOrigin + MAX_MEMORY_RANGE)
+        maxAddr = (ULONG_PTR)pOrigin + MAX_MEMORY_RANGE;
 
     // Make room for MEMORY_BLOCK_SIZE bytes.
     maxAddr -= MEMORY_BLOCK_SIZE - 1;
@@ -275,7 +279,7 @@ VOID FreeBuffer(LPVOID pBuffer)
             PMEMORY_SLOT pSlot = (PMEMORY_SLOT)pBuffer;
 #ifdef _DEBUG
             // Clear the released slot for debugging.
-            memset(pSlot, 0x00, sizeof(MEMORY_SLOT));
+            memset(pSlot, 0x00, sizeof(*pSlot));
 #endif
             // Restore the released slot to the list.
             pSlot->pNext = pBlock->pFree;
@@ -305,7 +309,7 @@ VOID FreeBuffer(LPVOID pBuffer)
 BOOL IsExecutableAddress(LPVOID pAddress)
 {
     MEMORY_BASIC_INFORMATION mi;
-    VirtualQuery(pAddress, &mi, sizeof(MEMORY_BASIC_INFORMATION));
+    VirtualQuery(pAddress, &mi, sizeof(mi));
 
     return (mi.State == MEM_COMMIT && (mi.Protect & PAGE_EXECUTE_FLAGS));
 }

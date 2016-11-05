@@ -36,6 +36,8 @@ void OneTweakConfig::SaveConfig(CSimpleIniA* ini)
 	ini->SetLongValue("BorderlessWindow", "RenderWidth", 0, "#Rendering width, 0 = autodetect");
 	ini->SetLongValue("BorderlessWindow", "RenderHeight", 0, "#Rendering height, 0 = autodetect");
 
+	ini->SetBoolValue("DirectInput", "NonExclusive", true, "#Allows Alt+F4 and multimedia keys");
+
 	OnSaveConfig(ini);
 	ini->SaveFile(inifilename.c_str());
 }
@@ -85,6 +87,8 @@ void OneTweakConfig::ReadConfig()
 		borderless.RenderWidth = ini.GetLongValue("BorderlessWindow", "RenderWidth");
 		borderless.RenderHeight = ini.GetLongValue("BorderlessWindow", "RenderHeight");
 	}
+
+	directinput.nonexclusive = ini.GetBoolValue("DirectInput", "NonExclusive");
 
 	OnReadConfig(&ini);
 }

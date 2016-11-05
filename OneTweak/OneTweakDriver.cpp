@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "OneTweak.h"
 #include "OneTweakDriver.h"
 
@@ -12,6 +13,7 @@ OneTweakDriver::OneTweakDriver()
 	MH_CreateHook(::GetPrivateProfileIntA, HookGetPrivateProfileIntA, reinterpret_cast<void**>(&GetPrivateProfileIntA));
 	MH_CreateHook(::CreateWindowExA, HookCreateWindowExA, reinterpret_cast<void**>(&CreateWindowExA));
 	MH_CreateHook(::SetWindowPos, HookSetWindowPos, reinterpret_cast<void**>(&SetWindowPos));
+	MH_CreateHookApiEx(L"dinput8.dll", "DirectInput8Create", HookDirectInput8Create, reinterpret_cast<void**>(&DirectInput8Create), NULL);
 }
 
 OneTweakDriver::~OneTweakDriver()
@@ -30,7 +32,6 @@ void OneTweakDriver::Run()
 {
 	MH_EnableHook(MH_ALL_HOOKS);
 }
-
 
 UINT WINAPI OneTweakDriver::HookGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName, INT nDefault, LPCSTR lpFileName)
 {
@@ -166,21 +167,21 @@ LRESULT CALLBACK OneTweakDriver::OneTweakWndProc(HWND hWnd, UINT uMsg, WPARAM wP
 	auto& config = g_Host->GetConfig();
 	switch (uMsg)
 	{
-		case WM_ACTIVATE:
+	case WM_ACTIVATE:
+	{
+		if (LOWORD(wParam) > 0)
 		{
-			if (LOWORD(wParam) > 0)
-			{
-				if (config.priority.enabled) OneTweakDriver::GetInstance().SetPriority(true);
-				if (config.double_cursor_fix.enabled) OneTweakDriver::GetInstance().ShowCursor(false);
-				break;
-			}
-			else
-			{
-				if (config.priority.enabled) OneTweakDriver::GetInstance().SetPriority(false);
-				if (config.double_cursor_fix.enabled) OneTweakDriver::GetInstance().ShowCursor(true);
-				break;
-			}
+			if (config.priority.enabled) OneTweakDriver::GetInstance().SetPriority(true);
+			if (config.double_cursor_fix.enabled) OneTweakDriver::GetInstance().ShowCursor(false);
+			break;
 		}
+		else
+		{
+			if (config.priority.enabled) OneTweakDriver::GetInstance().SetPriority(false);
+			if (config.double_cursor_fix.enabled) OneTweakDriver::GetInstance().ShowCursor(true);
+			break;
+		}
+	}
 	}
 
 	return CallWindowProc(OneTweakDriver::GetInstance().oldWndProc, hWnd, uMsg, wParam, lParam);
@@ -204,4 +205,49 @@ bool OneTweakDriver::SetPriority(bool high)
 		return SetPriorityClass(GetCurrentProcess(), config.priority.high) != 0;
 	else
 		return SetPriorityClass(GetCurrentProcess(), config.priority.low) != 0;
+}
+
+HRESULT WINAPI OneTweakDriver::HookSetCooperativeLevelA(LPDIRECTINPUT8A This, HWND hwnd, DWORD dwFlags)
+{
+	dwFlags &= DISCL_EXCLUSIVE;
+	dwFlags |= DISCL_NONEXCLUSIVE;
+
+	PrintLog("DirectInput set to NonExclusive mode");
+
+	return OneTweakDriver::GetInstance().SetCooperativeLevelA(This, hwnd, dwFlags);
+}
+
+HRESULT WINAPI OneTweakDriver::HookCreateDeviceA(LPDIRECTINPUT8A This, REFGUID rguid, LPDIRECTINPUTDEVICE8A *lplpDirectInputDevice, LPUNKNOWN pUnkOuter)
+{
+	HRESULT hr = OneTweakDriver::GetInstance().CreateDeviceA(This, rguid, lplpDirectInputDevice, pUnkOuter);
+	if (SUCCEEDED(hr) && lplpDirectInputDevice)
+	{
+		LPDIRECTINPUTDEVICE8A pDIDeviceA = static_cast<LPDIRECTINPUTDEVICE8A>(*lplpDirectInputDevice);
+		if (pDIDeviceA->lpVtbl->SetCooperativeLevel)
+		{
+			void* pTarget = pDIDeviceA->lpVtbl->SetCooperativeLevel;
+			MH_CreateHook(pTarget, HookSetCooperativeLevelA, reinterpret_cast<void**>(&OneTweakDriver::GetInstance().SetCooperativeLevelA));
+			MH_EnableHook(pTarget);
+		}
+	}
+
+	return hr;
+}
+
+HRESULT WINAPI OneTweakDriver::HookDirectInput8Create(HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID * ppvOut, LPUNKNOWN punkOuter)
+{
+	HRESULT hr = OneTweakDriver::GetInstance().DirectInput8Create(hinst, dwVersion, riidltf, ppvOut, punkOuter);
+	auto& config = g_Host->GetConfig();
+	if (config.directinput.nonexclusive && SUCCEEDED(hr) && ppvOut)
+	{
+		LPDIRECTINPUT8A pDIA = static_cast<LPDIRECTINPUT8A>(*ppvOut);
+		if (pDIA->lpVtbl->CreateDevice)
+		{
+			void* pTarget = pDIA->lpVtbl->CreateDevice;
+			MH_CreateHook(pTarget, HookCreateDeviceA, reinterpret_cast<void**>(&OneTweakDriver::GetInstance().CreateDeviceA));
+			MH_EnableHook(pTarget);
+		}
+	}
+
+	return hr;
 }

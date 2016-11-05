@@ -2,7 +2,7 @@
 
 #include <SimpleIni.h>
 
-#define CONFIG_VERSION 10
+#define CONFIG_VERSION 11
 
 class OneTweakConfig
 {
@@ -51,6 +51,11 @@ public:
     {
         bool enabled;
     } double_cursor_fix;
+
+	struct
+	{
+		bool nonexclusive;
+	} directinput;
 
 protected:
 	void SaveConfig(CSimpleIniA* ini);

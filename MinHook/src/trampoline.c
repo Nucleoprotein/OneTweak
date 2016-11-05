@@ -1,6 +1,6 @@
 ﻿/*
  *  MinHook - The Minimalistic API Hooking Library for x64/x86
- *  Copyright (C) 2009-2015 Tsuda Kageyu.
+ *  Copyright (C) 2009-2016 Tsuda Kageyu.
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,8 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <Windows.h>
-#include <intrin.h>
+#include <windows.h>
+
+#ifndef ARRAYSIZE
+    #define ARRAYSIZE(A) (sizeof(A)/sizeof((A)[0]))
+#endif
 
 #ifdef _M_X64
     #include "./hde/hde64.h"
@@ -145,7 +148,11 @@ BOOL CreateTrampolineFunction(PTRAMPOLINE ct)
             PUINT32 pRelAddr;
 
             // Avoid using memcpy to reduce the footprint.
+#ifndef _MSC_VER
+            memcpy(instBuf, (LPBYTE)pOldInst, copySize);
+#else
             __movsb(instBuf, (LPBYTE)pOldInst, copySize);
+#endif
             pCopySrc = instBuf;
 
             // Relative address is stored at (instruction length - immediate value length - 4).
@@ -266,7 +273,11 @@ BOOL CreateTrampolineFunction(PTRAMPOLINE ct)
         ct->nIP++;
 
         // Avoid using memcpy to reduce the footprint.
+#ifndef _MSC_VER
+        memcpy((LPBYTE)ct->pTrampoline + newPos, pCopySrc, copySize);
+#else
         __movsb((LPBYTE)ct->pTrampoline + newPos, pCopySrc, copySize);
+#endif
         newPos += copySize;
         oldPos += hs.len;
     }

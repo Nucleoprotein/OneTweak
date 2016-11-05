@@ -20,6 +20,7 @@
 #include <vector>
 
 // TODO: reference additional headers your program requires here
+#include <dinput.h>
 
 #include "Types.h"
 #include "version.h"

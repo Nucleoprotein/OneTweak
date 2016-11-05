@@ -17,7 +17,7 @@ public:
 
 protected:
     // set DPI awareness to proper scale window
-    void SetProcessDPIAware();
+    void SetDPIAware();
 
     // run OneTweak
 	void Run();
