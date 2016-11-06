@@ -17,17 +17,15 @@ class Fallout4Host : public OneTweakHost
 public:
     Fallout4Host(const F4SEInterface * fose)
     {	
-        PrintLog(__FUNCTION__);
+        _MESSAGE(__FUNCTION__);
 
 		config.ReadConfig();
-
-		Run();
     }
 
-    ~Fallout4Host(){PrintLog(__FUNCTION__);};
+    ~Fallout4Host(){_MESSAGE(__FUNCTION__);};
 
 protected:
-	const OneTweakConfig& GetConfig() const
+	const OneTweakConfig& GetConfig() const override
 	{
 		return config;
 	}

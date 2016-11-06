@@ -17,17 +17,15 @@ class OblivionHost : public OneTweakHost
 public:
     OblivionHost(const OBSEInterface * obse)
     {	
-		PrintLog(__FUNCTION__);
+		_MESSAGE(__FUNCTION__);
 
 		config.ReadConfig();
-
-        Run();
     }
 
-	~OblivionHost(){ PrintLog(__FUNCTION__); };
+	~OblivionHost(){ _MESSAGE(__FUNCTION__); };
 
 protected:
-	const OneTweakConfig& GetConfig() const
+	const OneTweakConfig& GetConfig() const override
 	{
 		return config;
 	}

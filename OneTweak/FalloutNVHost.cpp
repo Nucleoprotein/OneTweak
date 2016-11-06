@@ -17,7 +17,7 @@ void FalloutNVConfig::OnReadConfig(CSimpleIniA* ini)
 {
 	if (!ini) return;
 
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
 	ClassName = ini->GetValue("FalloutNV", "ClassName", "Fallout: New Vegas");
 	WindowName = ini->GetValue("FalloutNV", "WindowName", "Fallout: New Vegas");
@@ -27,7 +27,10 @@ extern "C"
 {
     bool __cdecl NVSEPlugin_Query(const NVSEInterface * nvse, PluginInfo * info)
     {
-        PrintLog(__FUNCTION__);
+		//TODO: veryfy "FalloutNV" folder name
+		gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\FalloutNV\\NVSE\\nvse_OneTweak.log");
+
+        _MESSAGE(__FUNCTION__);
         // populate info structure
         info->infoVersion =	PluginInfo::kInfoVersion;
         info->name =		"OneTweak";
@@ -42,10 +45,10 @@ extern "C"
 
     bool __cdecl NVSEPlugin_Load(const NVSEInterface * nvse)
     {
-        PrintLog(__FUNCTION__);
+        _MESSAGE(__FUNCTION__);
 
 		g_Host.reset(new FalloutNVHost(nvse));
 
-		return g_Host != nullptr;
+		return g_Host ? g_Host->Run() : 0;
     }
 };

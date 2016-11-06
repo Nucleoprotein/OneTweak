@@ -45,7 +45,7 @@
     <IncludePath>$(SolutionDir)\Common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)\Common;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\common;$(SolutionDir)\simpleini;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -73,7 +73,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ONETWEAK_EXPORTS;_BIND_TO_CURRENT_VCLIBS_VERSION=1;CINTERFACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ONETWEAK_EXPORTS;_BIND_TO_CURRENT_VCLIBS_VERSION=1;LOGGER_DISABLE;CINTERFACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>..\MinHook\include;.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -114,6 +114,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="Utility.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +146,9 @@
     <ResourceCompile Include="resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\common\common.vcxproj">
+      <Project>{20c6411c-596f-4b85-be4e-8bc91f59d8a6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\MinHook\build\VC14\libMinHook.vcxproj">
       <Project>{f142a341-5ee0-442d-a15f-98ae9b48dbae}</Project>
     </ProjectReference>

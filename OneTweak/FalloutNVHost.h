@@ -17,17 +17,15 @@ class FalloutNVHost : public OneTweakHost
 public:
     FalloutNVHost(const NVSEInterface * nvse)
     {	
-        PrintLog(__FUNCTION__);
+        _MESSAGE(__FUNCTION__);
 
 		config.ReadConfig();
-
-        Run();
     }
 
-    ~FalloutNVHost(){PrintLog(__FUNCTION__);};
+    ~FalloutNVHost(){_MESSAGE(__FUNCTION__);};
 
 protected:
-	const OneTweakConfig& GetConfig() const
+	const OneTweakConfig& GetConfig() const override
 	{
 		return config;
 	}

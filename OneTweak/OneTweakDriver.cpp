@@ -7,18 +7,13 @@
 
 OneTweakDriver::OneTweakDriver()
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 	MH_Initialize();
-
-	MH_CreateHook(::GetPrivateProfileIntA, HookGetPrivateProfileIntA, reinterpret_cast<void**>(&GetPrivateProfileIntA));
-	MH_CreateHook(::CreateWindowExA, HookCreateWindowExA, reinterpret_cast<void**>(&CreateWindowExA));
-	MH_CreateHook(::SetWindowPos, HookSetWindowPos, reinterpret_cast<void**>(&SetWindowPos));
-	MH_CreateHookApiEx(L"dinput8.dll", "DirectInput8Create", HookDirectInput8Create, reinterpret_cast<void**>(&DirectInput8Create), NULL);
 }
 
 OneTweakDriver::~OneTweakDriver()
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
 	ShowCursor(true);
 
@@ -28,9 +23,20 @@ OneTweakDriver::~OneTweakDriver()
 	MH_Uninitialize();
 }
 
-void OneTweakDriver::Run()
+bool OneTweakDriver::Run()
 {
-	MH_EnableHook(MH_ALL_HOOKS);
+	auto& config = g_Host->GetConfig();
+
+	MH_CreateHook(::GetPrivateProfileIntA, HookGetPrivateProfileIntA, reinterpret_cast<void**>(&GetPrivateProfileIntA));
+	MH_CreateHook(::CreateWindowExA, HookCreateWindowExA, reinterpret_cast<void**>(&CreateWindowExA));
+	MH_CreateHook(::SetWindowPos, HookSetWindowPos, reinterpret_cast<void**>(&SetWindowPos));
+
+	if (config.directinput.nonexclusive)
+	{
+		MH_CreateHookApiEx(L"dinput8.dll", "DirectInput8Create", HookDirectInput8Create, reinterpret_cast<void**>(&DirectInput8Create), NULL);
+	}
+
+	return MH_EnableHook(MH_ALL_HOOKS) == MH_OK;
 }
 
 UINT WINAPI OneTweakDriver::HookGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName, INT nDefault, LPCSTR lpFileName)
@@ -41,7 +47,7 @@ UINT WINAPI OneTweakDriver::HookGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR l
 		// disable fullscreen
 		if (strcmp(lpKeyName, "bFull Screen") == 0)
 		{
-			PrintLog("Setting \"bFull Screen\" = 0");
+			_MESSAGE("Setting \"bFull Screen\" = 0");
 			return 0;
 		}
 
@@ -49,21 +55,21 @@ UINT WINAPI OneTweakDriver::HookGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR l
 		int cx = config.borderless.RenderWidth ? config.borderless.RenderWidth : GetSystemMetrics(SM_CXSCREEN);
 		if (cx > 0 && strcmp(lpKeyName, "iSize W") == 0)
 		{
-			PrintLog("Setting \"iSize W\" = %d", cx);
+			_MESSAGE("Setting \"iSize W\" = %d", cx);
 			return cx;
 		}
 
 		int cy = config.borderless.RenderHeight ? config.borderless.RenderHeight : GetSystemMetrics(SM_CYSCREEN);
 		if (cy > 0 && strcmp(lpKeyName, "iSize H") == 0)
 		{
-			PrintLog("Setting \"iSize H\" = %d", cy);
+			_MESSAGE("Setting \"iSize H\" = %d", cy);
 			return cy;
 		}
 
 		int active = config.borderless.active;
 		if (strcmp(lpKeyName, "bAlwaysActive") == 0)
 		{
-			PrintLog("Setting \"bAlwaysActive\" = %d", active);
+			_MESSAGE("Setting \"bAlwaysActive\" = %d", active);
 			return active;
 		}
 	}
@@ -73,7 +79,7 @@ UINT WINAPI OneTweakDriver::HookGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR l
 
 HWND WINAPI OneTweakDriver::HookCreateWindowExA(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam)
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
 	auto& config = g_Host->GetConfig();
 
@@ -86,19 +92,19 @@ HWND WINAPI OneTweakDriver::HookCreateWindowExA(DWORD dwExStyle, LPCSTR lpClassN
 	GetClassNameA(hWnd, className.get(), MAX_PATH);
 	GetWindowTextA(hWnd, windowName.get(), MAX_PATH);
 
-	PrintLog("Window 0x%p: ClassName \"%s\", WindowName: \"%s\"", hWnd, className, windowName);
+	_MESSAGE("Window 0x%p: ClassName \"%s\", WindowName: \"%s\"", hWnd, className, windowName);
 
 	if (strcmp(className.get(), config.ClassName.c_str()) == 0 && strcmp(windowName.get(), config.WindowName.c_str()) == 0)
 	{
-		PrintLog("Found game window: 0x%p", hWnd);
+		_MESSAGE("Found game window: 0x%p", hWnd);
 		OneTweakDriver::GetInstance().hWnd = hWnd;
 		if (config.borderless.enabled)
 		{
 			LONG_PTR dwStyle = GetWindowLongPtr(hWnd, GWL_STYLE);
 			LONG_PTR dwExStyle = GetWindowLongPtr(hWnd, GWL_EXSTYLE);
 
-			PrintLog("Window dwStyle: 0x%08X", dwStyle);
-			PrintLog("Window dwExStyle: 0x%08X", dwExStyle);
+			_MESSAGE("Window dwStyle: 0x%08X", dwStyle);
+			_MESSAGE("Window dwExStyle: 0x%08X", dwExStyle);
 
 			config.borderless.flags ? dwStyle = config.borderless.flags : dwStyle &= ~WS_OVERLAPPEDWINDOW;
 			config.borderless.flagsEx ? dwExStyle = config.borderless.flagsEx : dwExStyle &= ~(WS_EX_OVERLAPPEDWINDOW | WS_EX_TOPMOST);
@@ -108,27 +114,27 @@ HWND WINAPI OneTweakDriver::HookCreateWindowExA(DWORD dwExStyle, LPCSTR lpClassN
 			SetLastError(0);
 			if (SetWindowLongPtr(hWnd, GWL_STYLE, dwStyle) == 0 && GetLastError() != 0)
 			{
-				PrintLog("SetWindowLongPtr for dwStyle failed");
+				_MESSAGE("SetWindowLongPtr for dwStyle failed");
 			}
 			else
 			{
-				PrintLog("Borderless Window dwStyle: 0x%08X", dwStyle);
+				_MESSAGE("Borderless Window dwStyle: 0x%08X", dwStyle);
 
 				SetLastError(0);
 				if (SetWindowLongPtr(hWnd, GWL_EXSTYLE, dwExStyle) == 0 && GetLastError() != 0)
 				{
-					PrintLog("SetWindowLongPtr for dwExStyle failed");
+					_MESSAGE("SetWindowLongPtr for dwExStyle failed");
 				}
 				else
 				{
-					PrintLog("Borderless Window dwExStyle: 0x%08X", dwExStyle);
+					_MESSAGE("Borderless Window dwExStyle: 0x%08X", dwExStyle);
 				}
 
 				DWORD nWidth = config.borderless.WindowWidth ? config.borderless.WindowWidth : GetSystemMetrics(SM_CXSCREEN);
 				DWORD nHeight = config.borderless.WindowHeight ? config.borderless.WindowHeight : GetSystemMetrics(SM_CYSCREEN);
 
 				OneTweakDriver::GetInstance().SetWindowPos(hWnd, HWND_TOP, 0, 0, nWidth, nHeight, SWP_NOCOPYBITS | SWP_NOSENDCHANGING);
-				PrintLog("Borderless fullscreen window mode active for window 0x%p", hWnd);
+				_MESSAGE("Borderless fullscreen window mode active for window 0x%p", hWnd);
 			}
 		}
 
@@ -141,7 +147,7 @@ HWND WINAPI OneTweakDriver::HookCreateWindowExA(DWORD dwExStyle, LPCSTR lpClassN
 
 BOOL WINAPI OneTweakDriver::HookSetWindowPos(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, UINT uFlags)
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
 	if (OneTweakDriver::GetInstance().hWnd == hWnd)
 	{
@@ -156,7 +162,7 @@ BOOL WINAPI OneTweakDriver::HookSetWindowPos(HWND hWnd, HWND hWndInsertAfter, in
 		}
 
 		MH_DisableHook(MH_ALL_HOOKS);
-		PrintLog("Hooks disabled");
+		_MESSAGE("Hooks disabled");
 	}
 
 	return OneTweakDriver::GetInstance().SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
@@ -189,7 +195,7 @@ LRESULT CALLBACK OneTweakDriver::OneTweakWndProc(HWND hWnd, UINT uMsg, WPARAM wP
 
 void OneTweakDriver::ShowCursor(bool show)
 {
-	PrintLog("%s mouse cursor", show ? "Show" : "Hide");
+	_MESSAGE("%s mouse cursor", show ? "Show" : "Hide");
 
 	if (show) while (::ShowCursor(TRUE) < 0);
 	else while (::ShowCursor(FALSE) > -1);
@@ -199,7 +205,7 @@ bool OneTweakDriver::SetPriority(bool high)
 {
 	auto& config = g_Host->GetConfig();
 
-	PrintLog("Set %s priority", high ? "high" : "low");
+	_MESSAGE("Set %s priority", high ? "high" : "low");
 
 	if (high)
 		return SetPriorityClass(GetCurrentProcess(), config.priority.high) != 0;
@@ -212,7 +218,7 @@ HRESULT WINAPI OneTweakDriver::HookSetCooperativeLevelA(LPDIRECTINPUT8A This, HW
 	dwFlags &= DISCL_EXCLUSIVE;
 	dwFlags |= DISCL_NONEXCLUSIVE;
 
-	PrintLog("DirectInput set to NonExclusive mode");
+	_MESSAGE("DirectInput set to NonExclusive mode");
 
 	return OneTweakDriver::GetInstance().SetCooperativeLevelA(This, hwnd, dwFlags);
 }
@@ -237,8 +243,7 @@ HRESULT WINAPI OneTweakDriver::HookCreateDeviceA(LPDIRECTINPUT8A This, REFGUID r
 HRESULT WINAPI OneTweakDriver::HookDirectInput8Create(HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID * ppvOut, LPUNKNOWN punkOuter)
 {
 	HRESULT hr = OneTweakDriver::GetInstance().DirectInput8Create(hinst, dwVersion, riidltf, ppvOut, punkOuter);
-	auto& config = g_Host->GetConfig();
-	if (config.directinput.nonexclusive && SUCCEEDED(hr) && ppvOut)
+	if (SUCCEEDED(hr) && ppvOut)
 	{
 		LPDIRECTINPUT8A pDIA = static_cast<LPDIRECTINPUT8A>(*ppvOut);
 		if (pDIA->lpVtbl->CreateDevice)

@@ -17,7 +17,7 @@ void Fallout3Config::OnReadConfig(CSimpleIniA* ini)
 {
 	if (!ini) return;
 
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
 	ClassName = ini->GetValue("Fallout3", "ClassName", "Fallout3");
 	WindowName = ini->GetValue("Fallout3", "WindowName", "Fallout3");
@@ -27,7 +27,9 @@ extern "C"
 {
     bool __cdecl FOSEPlugin_Query(const FOSEInterface * fose, PluginInfo * info)
     {
-        PrintLog(__FUNCTION__);
+		gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Fallout3\\FOSE\\fose_OneTweak.log");
+
+        _MESSAGE(__FUNCTION__);
         // populate info structure
         info->infoVersion =	PluginInfo::kInfoVersion;
         info->name =		"OneTweak";
@@ -42,10 +44,10 @@ extern "C"
 
     bool __cdecl FOSEPlugin_Load(const FOSEInterface * fose)
     {
-        PrintLog(__FUNCTION__);
+        _MESSAGE(__FUNCTION__);
 
 		g_Host.reset(new Fallout3Host(fose));
 
-		return g_Host != nullptr;
+		return g_Host ? g_Host->Run() : 0;
     }
 };

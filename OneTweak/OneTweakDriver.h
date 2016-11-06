@@ -2,11 +2,16 @@
 
 #include "OneTweakConfig.h"
 
-class OneTweakDriver : NonCopyable
+class OneTweakDriver
 {
 public:
 	OneTweakDriver();
 	~OneTweakDriver();
+
+	OneTweakDriver(const OneTweakDriver&&) = delete;
+	void operator=(const OneTweakDriver&&) = delete;
+	OneTweakDriver(OneTweakDriver&) = delete;
+	OneTweakDriver& operator=(OneTweakDriver& other) = delete;
 
 	static OneTweakDriver& GetInstance()
 	{
@@ -14,7 +19,7 @@ public:
 		return instance;
 	}
 
-	void Run();
+	bool Run();
 
 private:
 	HWND hWnd;
@@ -37,6 +42,5 @@ private:
 
 	void ShowCursor(bool show);
 	bool SetPriority(bool high);
-
 };
 

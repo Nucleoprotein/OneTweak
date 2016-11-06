@@ -11,6 +11,7 @@
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <windows.h>
+#include <shlobj.h>
 
 #include <d3d9.h>
 
@@ -20,9 +21,11 @@
 #include <vector>
 
 // TODO: reference additional headers your program requires here
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
 #include "Types.h"
 #include "version.h"
+#include "IDebugLog.h"
 
-#include "Logger.h"
+

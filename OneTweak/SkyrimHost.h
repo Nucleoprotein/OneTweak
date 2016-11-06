@@ -22,23 +22,21 @@ class SkyrimHost : public OneTweakHost
 public:
 	SkyrimHost(const SKSEInterface * skse)
 	{
-		PrintLog(__FUNCTION__);
+		_MESSAGE(__FUNCTION__);
 
 		config.ReadConfig();
 
 		if (config.precachekiller) PrecacheKiller();
 		if (config.nointro) NoIntro();
-
-		Run();
 	}
 
 	~SkyrimHost()
 	{
-		PrintLog(__FUNCTION__);
+		_MESSAGE(__FUNCTION__);
 	};
 
 protected:
-	const OneTweakConfig& GetConfig() const
+	const OneTweakConfig& GetConfig() const override
 	{
 		return config;
 	}

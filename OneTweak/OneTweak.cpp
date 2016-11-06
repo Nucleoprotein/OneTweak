@@ -1,32 +1,30 @@
 #include "stdafx.h"
 #include "OneTweak.h"
-#include "Logger.h"
-
 std::unique_ptr<OneTweakHost> g_Host(nullptr);
 
 OneTweakHost::OneTweakHost()
 {
-	PrintLog("OneTweak version " VERSION_STRING);
+	_MESSAGE("OneTweak version " VERSION_STRING);
 
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
 	SetDPIAware();
 }
 
 OneTweakHost::~OneTweakHost()
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 }
 
-void OneTweakHost::Run()
+bool OneTweakHost::Run()
 {
-	PrintLog(__FUNCTION__);
-	OneTweakDriver::GetInstance().Run();
+	_MESSAGE(__FUNCTION__);
+	return OneTweakDriver::GetInstance().Run();
 }
 
 void OneTweakHost::SetDPIAware()
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
 	DWORD   dwProcessSize = MAX_PATH;
 	wchar_t wszProcessName[MAX_PATH];

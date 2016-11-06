@@ -17,17 +17,15 @@ class Fallout3Host : public OneTweakHost
 public:
     Fallout3Host(const FOSEInterface * fose)
     {	
-        PrintLog(__FUNCTION__);
+        _MESSAGE(__FUNCTION__);
 
 		config.ReadConfig();
-
-		Run();
     }
 
-    ~Fallout3Host(){PrintLog(__FUNCTION__);};
+    ~Fallout3Host(){_MESSAGE(__FUNCTION__);};
 
 protected:
-	const OneTweakConfig& GetConfig() const
+	const OneTweakConfig& GetConfig() const override
 	{
 		return config;
 	}

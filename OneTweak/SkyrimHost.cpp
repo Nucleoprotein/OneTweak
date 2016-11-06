@@ -9,19 +9,19 @@ SkyrimConfig::SkyrimConfig() :
 precachekiller(false),
 nointro(false)
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 }
 
 SkyrimConfig::~SkyrimConfig()
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 }
 
 void SkyrimConfig::OnReadConfig(CSimpleIniA* ini)
 {
 	if (!ini) return;
 
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
 	ClassName = ini->GetValue("Skyrim", "ClassName", "Skyrim");
 	WindowName = ini->GetValue("Skyrim", "WindowName", "Skyrim");
@@ -34,7 +34,7 @@ void SkyrimConfig::OnSaveConfig(CSimpleIniA* ini)
 {
 	if (!ini) return;
 
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
     ini->SetBoolValue("Skyrim", "PrecacheKiller", true, "#Enable ShowRaceMenu Precache Killer");
 	ini->SetBoolValue("Skyrim", "NoIntro", true, "#Disable intro video");
@@ -42,10 +42,10 @@ void SkyrimConfig::OnSaveConfig(CSimpleIniA* ini)
 
 void SkyrimHost::PrecacheKiller()
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
-	SafeWrite8(0x008868C0, 0xC3); PrintLog("PrecacheCharGen disabled");
-	SafeWrite8(0x00886B50, 0xC3); PrintLog("PrecacheCharGenClear disabled");
+	SafeWrite8(0x008868C0, 0xC3); _MESSAGE("PrecacheCharGen disabled");
+	SafeWrite8(0x00886B50, 0xC3); _MESSAGE("PrecacheCharGenClear disabled");
 }
 
 void SkyrimHost::NoIntro()
@@ -54,14 +54,16 @@ void SkyrimHost::NoIntro()
 	//va:  010CD560
 	//rva: 00CCD560
 
-	SafeWrite8(0x010CD560, 0x00); PrintLog("Intro disabled");
+	SafeWrite8(0x010CD560, 0x00); _MESSAGE("Intro disabled");
 }
 
 extern "C"
 {
 	bool __cdecl SKSEPlugin_Query(const SKSEInterface * skse, PluginInfo * info)
 	{
-		PrintLog(__FUNCTION__);
+		gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim\\SKSE\\skse_OneTweak.log");
+
+		_MESSAGE(__FUNCTION__);
 		// populate info structure
 		info->infoVersion = PluginInfo::kInfoVersion;
 		info->name = "OneTweak";
@@ -83,10 +85,10 @@ extern "C"
 
 	bool __cdecl SKSEPlugin_Load(const SKSEInterface * skse)
 	{
-		PrintLog(__FUNCTION__);
+		_MESSAGE(__FUNCTION__);
 
 		g_Host.reset(new SkyrimHost(skse));
 
-		return g_Host != nullptr;
+		return g_Host ? g_Host->Run() : 0;
 	}
 };

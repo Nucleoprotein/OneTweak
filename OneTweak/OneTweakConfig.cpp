@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "OneTweakConfig.h"
-
+#include "Utility.h"
 
 OneTweakConfig::OneTweakConfig() :
 version(0)
@@ -9,7 +9,7 @@ version(0)
 
 void OneTweakConfig::SaveConfig(CSimpleIniA* ini)
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
 	ini->Reset();
 	version = CONFIG_VERSION;
@@ -44,7 +44,7 @@ void OneTweakConfig::SaveConfig(CSimpleIniA* ini)
 
 void OneTweakConfig::ReadConfig()
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 
 	inifilename = FullPathFromPath("OneTweak.ini");
 
@@ -95,7 +95,7 @@ void OneTweakConfig::ReadConfig()
 
 OneTweakConfig::~OneTweakConfig()
 {
-	PrintLog(__FUNCTION__);
+	_MESSAGE(__FUNCTION__);
 }
 
 DWORD OneTweakConfig::PriorityIdToClass(DWORD id)

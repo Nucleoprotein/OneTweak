@@ -15,12 +15,12 @@ public:
 
 	virtual const OneTweakConfig& GetConfig() const = 0;
 
+	// run OneTweak
+	bool Run();
+
 protected:
     // set DPI awareness to proper scale window
     void SetDPIAware();
-
-    // run OneTweak
-	void Run();
 };
 
 extern std::unique_ptr<OneTweakHost> g_Host;
